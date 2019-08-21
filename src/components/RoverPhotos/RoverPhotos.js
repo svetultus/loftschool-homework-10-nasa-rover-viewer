@@ -25,14 +25,15 @@ class RoverPhotos extends PureComponent {
           {name}
         </Typography>
         <GridList cols={3}>
-          {photos.map(photo => (
-            <GridListTile
-              key={photo.id}
-              cols={Math.round(Math.random() * 3 - 0.5)}
-            >
-              <img src={photo.img_src} alt={photo.camera.full_name} />
-            </GridListTile>
-          ))}
+          {photos.map &&
+            photos.map(photo => (
+              <GridListTile
+                key={photo.id}
+                cols={Math.round(Math.random() * 3 - 0.5)}
+              >
+                <img src={photo.img_src} alt={photo.camera.full_name} />
+              </GridListTile>
+            ))}
         </GridList>
       </Paper>
     );

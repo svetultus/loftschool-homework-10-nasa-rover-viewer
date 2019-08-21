@@ -17,6 +17,8 @@ import {
 } from '../../modules/RoverPhotos';
 import { connect } from 'react-redux';
 import RoverPhotos from '../RoverPhotos';
+import SelectSol from '../SelectSol';
+import styles from './RoversViewer.module.css';
 
 const MapStateToProps = state => ({
   photos: getPhotos(state),
@@ -37,19 +39,28 @@ class RoversViewer extends React.PureComponent {
   render() {
     const { sol, photos } = this.props;
     return (
-      <div>
-        {rovers.map(rover => {
-          return (
-            photos &&
-            photos[rover] &&
-            photos[rover][sol.current] && (
+      <div className={styles.root}>
+        <SelectSol
+          min={this.props.sol.min}
+          max={this.props.sol.max}
+          selectedSol={this.props.sol.current}
+          changeSol={this.props.changeSol}
+        />
+        <div className={styles.сontainer}>
+          {rovers.map(rover => {
+            return (
               <RoverPhotos
-                photos={photos[rover][sol.current].photos}
+                photos={
+                  photos && photos[rover] && photos[rover][sol.current]
+                    ? photos[rover][sol.current].photos
+                    : null
+                }
                 name={rover}
+                key={rover}
               />
-            )
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     );
   }
