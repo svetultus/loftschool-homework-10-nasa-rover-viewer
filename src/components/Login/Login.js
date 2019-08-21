@@ -3,6 +3,7 @@ import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
+import { apiKey } from './apiKey.js';
 
 const styles = theme => ({
   root: {
@@ -22,7 +23,8 @@ const styles = theme => ({
 
 class Login extends PureComponent {
   state = {
-    inputValue: ''
+    // inputValue: ''
+    inputValue: apiKey
   };
   handleChange = event => {
     this.setState({ inputValue: event.target.value });

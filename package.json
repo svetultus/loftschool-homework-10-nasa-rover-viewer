@@ -8,8 +8,8 @@
     "debounce": "^1.2.0",
     "immer": "^1.7.2",
     "ramda": "^0.25.0",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
     "react-redux": "^5.0.7",
     "react-scripts": "2.0.4",
     "redux": "^4.0.1",
@@ -34,10 +34,5 @@
     "eslint-plugin-react": "^7.11.1",
     "eslint-plugin-react-perf": "^2.0.9"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"]
 }
