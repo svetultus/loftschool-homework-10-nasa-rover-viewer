@@ -22,34 +22,15 @@ function* fetchPhotos(action) {
     const apiKey = yield select(getApiKey);
     const { current: solNum } = yield select(getSol);
     const photosFromState = yield select(getPhotosFromState);
-    let photos = { ...photosFromState };
-    console.log(photos);
+    const photos = JSON.parse(JSON.stringify(photosFromState));
+
     for (let i = 0; i < rovers.length; i++) {
       const rover = rovers[i];
-      const roverPhotos = {};
-      let res = yield call(getPhotos, apiKey, rover, solNum);
-      console.log('res', res);
-      debugger;
-      roverPhotos[rover] = {};
-      roverPhotos[rover][solNum] = res;
-      console.log(roverPhotos);
-      photos = { ...photos, ...roverPhotos };
+      const res = yield call(getPhotos, apiKey, rover, solNum);
 
-      console.log(photos);
+      if (!photos[rover]) photos[rover] = {};
+      photos[rover][solNum] = res;
     }
-
-    // let photos = Object.assign({}, photosFromState);
-
-    // for (let i = 0; i < rovers.length; i++) {
-    //   const rover = rovers[i];
-    //   if (!photos[rover]) {
-    //     photos[rover] = {};
-    //   }
-    //   if (!(photos[rover][solNum] && photos[rover][solNum].length)) {
-    //     let res = yield call(getPhotos, apiKey, rover, solNum);
-    //     photos[rover][solNum] = res;
-    //   }
-    // }
 
     yield put(fetchPhotosSuccess(photos));
   } catch (error) {

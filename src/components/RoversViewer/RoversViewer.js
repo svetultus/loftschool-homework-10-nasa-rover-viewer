@@ -41,8 +41,8 @@ class RoversViewer extends React.PureComponent {
     return (
       <div className={styles.root}>
         <SelectSol
-          min={this.props.sol.min}
-          max={this.props.sol.max}
+          minSol={this.props.sol.min}
+          maxSol={this.props.sol.max}
           selectedSol={this.props.sol.current}
           changeSol={this.props.changeSol}
         />
