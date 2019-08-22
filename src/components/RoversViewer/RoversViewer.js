@@ -34,7 +34,24 @@ const rovers = ['curiosity', 'opportunity', 'spirit'];
 
 class RoversViewer extends React.PureComponent {
   componentDidMount() {
-    this.props.fetchPhotosRequest();
+    this.solCurrent = this.props.sol.current;
+    const { fetchPhotosRequest, sol } = this.props;
+
+    for (let i = 0; i < rovers.length; i++) {
+      let rover = rovers[i];
+      fetchPhotosRequest({ name: rover, sol: sol.current });
+    }
+  }
+  componentDidUpdate() {
+    const { fetchPhotosRequest, sol, photos } = this.props;
+    if (this.solCurrent === sol.current) return null;
+
+    for (let i = 0; i < rovers.length; i++) {
+      let rover = rovers[i];
+      if (!(photos[rover] && photos[rover][sol.current])) {
+        fetchPhotosRequest({ name: rover, sol: sol.current });
+      }
+    }
   }
   render() {
     const { sol, photos } = this.props;

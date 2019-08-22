@@ -12,36 +12,45 @@ import { createSelector } from 'reselect';
 
 export const photos = handleActions(
   {
-    [fetchPhotosRequest]: state => state,
-    [fetchPhotosSuccess]: (state, action) => action.payload,
-    [fetchPhotosFailure]: state => state
+    [fetchPhotosRequest]: (state, action) => {
+      const { name, sol } = action.payload;
+      const stateCopy = JSON.parse(JSON.stringify(state));
+
+      if (!stateCopy[name]) stateCopy[name] = {};
+      if (!stateCopy[name][sol]) stateCopy[name][sol] = {};
+      stateCopy[name][sol].photos = [];
+      stateCopy[name][sol].isLoading = true;
+      stateCopy[name][sol].isLoaded = false;
+
+      return { ...stateCopy };
+    },
+    [fetchPhotosSuccess]: (state, action) => {
+      const { photos, name, sol } = action.payload;
+      const stateCopy = JSON.parse(JSON.stringify(state));
+
+      stateCopy[name][sol].photos = photos;
+      stateCopy[name][sol].isLoading = false;
+      stateCopy[name][sol].isLoaded = true;
+      return { ...stateCopy };
+    },
+    [fetchPhotosFailure]: (state, action) => {
+      const { name, sol, error } = action.payload;
+      const stateCopy = JSON.parse(JSON.stringify(state));
+
+      stateCopy[name][sol].isLoading = false;
+      stateCopy[name][sol].isLoaded = false;
+
+      return { ...stateCopy };
+    }
   },
   {}
-);
-
-export const isLoading = handleActions(
-  {
-    [fetchPhotosRequest]: state => true,
-    [fetchPhotosSuccess]: state => false,
-    [fetchPhotosFailure]: state => false
-  },
-  false
-);
-
-export const isLoaded = handleActions(
-  {
-    [fetchPhotosRequest]: state => false,
-    [fetchPhotosSuccess]: state => true,
-    [fetchPhotosFailure]: state => false
-  },
-  false
 );
 
 export const error = handleActions(
   {
     [fetchPhotosRequest]: state => null,
     [fetchPhotosSuccess]: state => null,
-    [fetchPhotosFailure]: (state, action) => action.payload
+    [fetchPhotosFailure]: (state, action) => action.payload.error
   },
   null
 );
@@ -59,16 +68,6 @@ export const getPhotos = createSelector(
   photos => photos
 );
 
-export const getisLoading = createSelector(
-  state => state.roverPhotos.isLoading,
-  isLoading => isLoading
-);
-
-export const getisLoaded = createSelector(
-  state => state.roverPhotos.isLoaded,
-  isLoaded => isLoaded
-);
-
 export const getError = createSelector(
   state => state.roverPhotos.error,
   error => error
@@ -79,4 +78,4 @@ export const getSol = createSelector(
   sol => sol
 );
 
-export default combineReducers({ photos, isLoading, isLoaded, error, sol });
+export default combineReducers({ photos, error, sol });

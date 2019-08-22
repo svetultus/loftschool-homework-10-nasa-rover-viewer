@@ -1,5 +1,14 @@
 // Реализуйте саги
-import { takeLatest, select, put, call, fork, all } from 'redux-saga/effects';
+import {
+  takeLatest,
+  take,
+  takeEvery,
+  select,
+  put,
+  call,
+  fork,
+  all
+} from 'redux-saga/effects';
 import { getPhotos } from './api.js';
 import {
   fetchPhotosRequest,
@@ -10,31 +19,31 @@ import {
 import { getApiKey } from '../Auth';
 import { getPhotos as getPhotosFromState, getSol } from './RoverPhotos';
 
-const rovers = ['curiosity', 'opportunity', 'spirit'];
-
 function* fetchPhotosWatcher() {
-  yield takeLatest(fetchPhotosRequest, fetchPhotos);
+  while (true) {
+    const action = yield take(fetchPhotosRequest);
+    yield fork(fetchPhotos, action.payload);
+  }
   yield takeLatest(changeSol, fetchPhotos);
 }
 
-function* fetchPhotos(action) {
+function* fetchPhotos(payload) {
+  const { sol, name } = payload;
+
   try {
     const apiKey = yield select(getApiKey);
-    const { current: solNum } = yield select(getSol);
     const photosFromState = yield select(getPhotosFromState);
     const photos = JSON.parse(JSON.stringify(photosFromState));
-
-    for (let i = 0; i < rovers.length; i++) {
-      const rover = rovers[i];
-      const res = yield call(getPhotos, apiKey, rover, solNum);
-
-      if (!photos[rover]) photos[rover] = {};
-      photos[rover][solNum] = res;
+    if (
+      !photos[name] ||
+      !photos[name][sol] ||
+      !photos[name][sol].photos.length
+    ) {
+      const res = yield call(getPhotos, apiKey, name, sol);
+      yield put(fetchPhotosSuccess({ ...res, name, sol }));
     }
-
-    yield put(fetchPhotosSuccess(photos));
   } catch (error) {
-    yield put(fetchPhotosFailure(error.message));
+    yield put(fetchPhotosFailure({ error: error.message, name, sol }));
   }
 }
 
