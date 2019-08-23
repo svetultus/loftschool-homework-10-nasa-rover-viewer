@@ -60,7 +60,7 @@ export const sol = handleActions(
       return { ...state, current: action.payload };
     }
   },
-  { current: 1, min: 1, max: 3 }
+  { current: 1, min: 1, max: 100 }
 );
 
 export const getPhotos = createSelector(
