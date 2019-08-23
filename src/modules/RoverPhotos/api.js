@@ -4,7 +4,6 @@ export const getPhotos = (apiKey, rover, solNum) =>
       `${rover}/photos?` +
       `sol=${solNum}&` +
       `api_key=${apiKey}`
-  ).then(
-    response =>
-      response.status !== 200 ? Promise.reject(response) : response.json()
+  ).then(response =>
+    response.status !== 200 ? Promise.reject(response) : response.json()
   );
